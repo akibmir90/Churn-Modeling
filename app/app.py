@@ -1,4 +1,3 @@
-
 from flask import Flask, request, render_template
 import joblib
 import numpy as np
@@ -7,6 +6,15 @@ app = Flask(__name__)
 
 # Load the best trained model
 best_model = joblib.load('best_model.pkl')
+
+# Location label mapping
+location_mapping = {
+    'Los Angeles': 0,
+    'New York': 1,
+    'Miami': 2,
+    'Chicago': 3,
+    'Houston': 4
+}
 
 @app.route('/')
 def home():
@@ -18,21 +26,16 @@ def predict():
         # Get input values from the form
         age = int(request.form['age'])
         gender = request.form['gender']
-        location_encoded = int(request.form['location_encoded'])  # Extract location_encoded
+        location = request.form['location']
         subscription_months = int(request.form['subscription_months'])
         monthly_bill = float(request.form['monthly_bill'])
         total_usage_gb = float(request.form['total_usage_gb'])
         
         # Prepare the input data for prediction
         gender_encoded = 1 if gender == 'Male' else 0
+        location_encoded = location_mapping[location]
         
-        location_mapping = {1: 'Houston', 2: 'Los Angeles', 3: 'Miami', 4: 'New York'}
-        location = location_mapping[location_encoded]
-        
-        location_encoded = {'Houston': 0, 'Los Angeles': 0, 'Miami': 0, 'New York': 0}
-        location_encoded[location] = 1
-        
-        input_features = [age, subscription_months, monthly_bill, total_usage_gb, gender_encoded] + list(location_encoded.values())
+        input_features = [age, subscription_months, monthly_bill, total_usage_gb, gender_encoded, location_encoded]
         
         # Make a prediction
         prediction = best_model.predict([input_features])[0]
