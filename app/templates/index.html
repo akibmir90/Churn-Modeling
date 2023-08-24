@@ -1,13 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Churn Prediction</title>
+    <title>Churn Prediction App</title>
 </head>
 <body>
-    <h1>Churn Prediction</h1>
-    <form action="/predict" method="POST">
-        <!-- Include input fields here -->
+    <h1>Welcome to the Churn Prediction App!</h1>
+    <form method="post" action="/predict">
+        Age: <input type="number" name="age" required><br>
+        Gender: <select name="gender">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select><br>
+        Location: <select name="location">
+            <option value="Los Angeles">Los Angeles</option>
+            <option value="New York">New York</option>
+            <option value="Miami">Miami</option>
+            <option value="Chicago">Chicago</option>
+            <option value="Houston">Houston</option>
+        </select><br>
+        Subscription Months: <input type="number" name="subscription_months" required><br>
+        Monthly Bill: <input type="number" name="monthly_bill" step="0.01" required><br>
+        Total Usage (GB): <input type="number" name="total_usage_gb" step="0.01" required><br>
         <input type="submit" value="Predict">
     </form>
+    {% if prediction %}
+        <h2>Prediction: {{ prediction }}</h2>
+    {% endif %}
+    {% if error %}
+        <h2>Error: {{ error }}</h2>
+    {% endif %}
 </body>
 </html>
